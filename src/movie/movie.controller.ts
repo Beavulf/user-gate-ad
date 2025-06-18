@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Query, Body, Headers, Req } from '@nestjs/common';
+import { Controller, Get, Post, Query, Body, Headers, Req, Param, Put, Delete } from '@nestjs/common';
 import { MovieService } from './movie.service';
+import { MovieDTO } from './dto/movie.dto';
 
 @Controller({
   path: 'movie',
@@ -9,27 +10,27 @@ export class MovieController {
   constructor(private readonly movieService: MovieService) {}
 
   @Get()
-  test(@Query() query: any){
-    return `Film ${JSON.stringify(query)}`
+  async findAll() {
+    return await this.movieService.findAll();
   }
 
   @Post()
-  create(@Body() body: {title: string}) {
-    return `Body ${JSON.stringify(body)}`
+  async create(@Body() dto: MovieDTO) {
+    return await this.movieService.create(dto);
   }
 
-  @Get('headers')
-  getHeaders(@Headers() headers: any) {
-    return headers
+  @Get(':id')
+  async findById(@Param('id') id: string) {
+    return await this.movieService.findById(id);
   }
 
-  @Get('user-agent')
-  getUserAgent(@Headers('user-agent') userAgent: string) {
-    return userAgent
+  @Put(':id')
+  async update(@Param('id') id: string, @Body() dto: MovieDTO) {
+    return await this.movieService.update(id, dto)
   }
 
-  @Get('request')
-  getRequestDetails(@Req() req: Request) {
-    return req.headers
+  @Delete(':id')
+  async delete(@Param('id') id: string) {
+    return await this.movieService.delete(id);
   }
 }
